@@ -11,6 +11,7 @@ public class BookRepository : IRepository<Book, int>
     public BookRepository(string filePath)
     {
         _filePath = filePath;
+        ReadFromCsv();
     }
 
     public void Add(Book book)

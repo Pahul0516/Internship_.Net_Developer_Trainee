@@ -11,6 +11,7 @@ public class UserRepository : IRepository<User, int>
     public UserRepository(string filePath)
     {
         _filePath = filePath;
+        ReadFromCsv();
     }
 
     public void Add(User user)

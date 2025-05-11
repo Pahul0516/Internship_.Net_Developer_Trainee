@@ -1,4 +1,8 @@
+using Library.Gui;
+using Microsoft.Extensions.Configuration;
+
 namespace Library
+
 {
     internal static class Program
     {
@@ -8,10 +12,28 @@ namespace Library
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+            string booksPath = config["CsvPaths:Books"];
+            string usersPath = config["CsvPaths:Users"];
+            string borrowingsPath = config["CsvPaths:Borrows"];
+
+            var bookRepo = new BookRepository(booksPath);
+            var userRepo = new UserRepository(usersPath);
+            var borrowingRepo = new BorrowRepository(borrowingsPath);
+
+            Controller controller = new Controller(userRepo, bookRepo, borrowingRepo);
+            
+            var books = bookRepo.GetAll();
+
+            Console.WriteLine(books);
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            var login = Login.GetInstance(controller);
+            Application.Run(login);
         }
     }
 }
